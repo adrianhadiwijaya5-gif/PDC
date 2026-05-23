@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTFS German-Style PDC Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-zinc-950 via-slate-900 to-stone-950 text-gray-100 font-sans antialiased min-h-screen pb-12">
+
+    <!-- TOP NAVBAR -->
+    <nav class="max-w-6xl mx-auto mt-4 mx-4 md:mx-auto bg-slate-900/60 backdrop-blur-md px-6 py-4 flex justify-between items-center border border-slate-800 rounded-3xl shadow-2xl">
+        <div class="flex items-center gap-3">
+            <div class="p-2.5 bg-amber-600/20 text-amber-400 rounded-2xl border border-amber-500/30">
+                <i class="fas fa-terminal text-xl"></i>
+            </div>
+            <div>
+                <h1 class="text-md md:text-lg font-black tracking-wider bg-gradient-to-r from-amber-400 to-orange-300 bg-clip-text text-transparent">PTFS ATC SYSTEM</h1>
+                <p class="text-[10px] text-zinc-400 font-mono tracking-widest">GERMAN STANDARD PDC DATALINK</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2 text-xs font-mono bg-zinc-950 px-3 py-1.5 rounded-xl border border-zinc-800 text-zinc-400">
+            <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span> SYSTEM ONLINE
+        </div>
+    </nav>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-6xl mx-auto mt-8 px-4 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- PANEL INPUT DATA (KIRI) -->
+        <section class="lg:col-span-5 bg-slate-900/40 backdrop-blur-md p-6 rounded-3xl border border-slate-800 shadow-xl space-y-4">
+            <div class="border-b border-zinc-800 pb-2 mb-4">
+                <h2 class="text-sm font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-2">
+                    <i class="fas fa-edit text-amber-400"></i> Input Clearance Data
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-1">Callsign (ARC)</label>
+                    <input type="text" id="inputArc" placeholder="e.g., DLH452" class="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-xl focus:outline-none focus:border-amber-500 font-mono uppercase text-white">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-1">Destination (DEST)</label>
+                    <input type="text" id="inputDest" placeholder="e.g., EDDF" class="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-xl focus:outline-none focus:border-amber-500 font-mono uppercase text-white">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-1">Clearance Type</label>
+                    <select id="inputClearance" class="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-xl focus:outline-none focus:border-amber-500 text-sm text-zinc-300">
+                        <option value="IFR CLEARANCE">IFR Departure</option>
+                        <option value="VFR CLEARANCE">VFR Departure</option>
+                        <option value="TACTICAL CLR">Tactical Exit</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-1">Squawk Code (SQ)</label>
+                    <div class="relative">
+                        <input type="text" id="inputSq" maxlength="4" placeholder="7001" class="w-full pl-3 pr-10 py-2 bg-zinc-950 border border-zinc-800 rounded-xl focus:outline-none focus:border-amber-500 font-mono text-amber-400 font-bold">
+                        <button onclick="generateRandomSquawk()" class="absolute right-2 top-2 text-zinc-500 hover:text-amber-400 transition-colors" title="Auto-gen squawk">
+                            <i class="fas fa-dice"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-1">SID (Standard Departure)</label>
+                    <input type="text" id="inputSid" placeholder="e.g., MARUN1B" class="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-xl focus:outline-none focus:border-amber-500 font-mono uppercase text-white">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-1">Initial Routing (DCT)</label>
+                    <input type="text" id="inputDct" placeholder="e.g., MARUN" class="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-xl focus:outline-none focus:border-amber-500 font-mono uppercase text-white">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-1">Initial Alt (ALT)</label>
+                    <input type="text" id="inputAlt" placeholder="e.g., 4000FT" class="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-xl focus:outline-none focus:border-amber-500 font-mono text-white">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-1">ATC Frequency (ATF)</label>
+                    <input type="text" id="inputAtf" placeholder="e.g., 121.800 MHZ" class="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-xl focus:outline-none focus:border-amber-500 font-mono text-white">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-1">Additional Message (RMK)</label>
+                <input type="text" id="inputRmk" placeholder="e.g., ADVISE WHEN READY FOR PUSHBACK / EXP RY08" class="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-xl focus:outline-none focus:border-amber-500 font-mono text-xs text-amber-300 uppercase">
+            </div>
+
+            <button onclick="compileGermanPDC()" class="w-full mt-4 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 hover:scale-[1.01] active:scale-95 transition-all text-white font-bold py-3 rounded-2xl shadow-lg shadow-orange-950/40 uppercase tracking-wider text-xs">
+                <i class="fas fa-cog mr-2"></i> Compile Datalink Message
+            </button>
+        </section>
+
+        <!-- PANEL OUTPUT PREVIEW (KANAN) -->
+        <section class="lg:col-span-7 flex flex-col space-y-4">
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-5 flex-1 flex flex-col shadow-2xl relative overflow-hidden">
+                <div class="flex justify-between items-center border-b border-zinc-800 pb-3 mb-4">
+                    <span class="text-xs font-bold text-zinc-400 tracking-widest uppercase flex items-center gap-2">
+                        <i class="fas fa-print text-amber-500"></i> ACARS / Datalink Output (Format DE)
+                    </span>
+                    <span class="text-[10px] font-mono bg-zinc-950 border border-zinc-800 px-2 py-0.5 rounded-lg text-zinc-500" id="liveCid">CID: -----</span>
+                </div>
+
+                <div class="flex-1 bg-black/70 rounded-2xl border border-zinc-800/80 p-5 font-mono text-xs sm:text-sm text-emerald-400 leading-relaxed tracking-wide shadow-inner select-all whitespace-pre-wrap overflow-y-auto h-[290px]" id="pdcOutputBox">
+                    <div class="text-zinc-600 text-center pt-24 font-sans">
+                        <i class="fas fa-network-wired block text-3xl mb-2 text-zinc-800"></i>
+                        Menunggu kompilasi data clearance dari operator ATC...
+                    </div>
+                </div>
+
+                <div class="mt-4 flex gap-3">
+                    <button onclick="copyPdcToClipboard()" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 py-2.5 rounded-xl text-xs font-bold transition-all border border-zinc-700/60 flex items-center justify-center gap-2">
+                        <i class="far fa-copy text-amber-400"></i> Copy Message
+                    </button>
+                    <button onclick="clearForm()" class="px-4 bg-zinc-950 hover:bg-zinc-900 text-zinc-500 hover:text-red-400 py-2.5 rounded-xl text-xs font-bold transition-all border border-zinc-800 flex items-center justify-center">
+                        <i class="fas fa-undo"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-amber-950/10 border border-amber-900/30 rounded-2xl p-4 text-xs text-amber-400/80 leading-relaxed">
+                <div class="font-bold uppercase tracking-wider mb-1 text-amber-400 flex items-center gap-1.5">
+                    <i class="fas fa-info-circle"></i> Info Aturan Format Jerman (DFS Standard)
+                </div>
+                Kolom `RMK` (Remarks/Additional Message) digunakan untuk memuat pesan operasional taktis tambahan tanpa perlu merusak struktur mutlak parameter aeronautika utama di atasnya.
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function generateRandomSquawk() {
+            let squawk = "";
+            for (let i = 0; i < 4; i++) {
+                squawk += Math.floor(Math.random() * 8);
+            }
+            document.getElementById('inputSq').value = squawk;
+        }
+
+        function clearForm() {
+            document.getElementById('inputArc').value = "";
+            document.getElementById('inputDest').value = "";
+            document.getElementById('inputSid').value = "";
+            document.getElementById('inputDct').value = "";
+            document.getElementById('inputAlt').value = "";
+            document.getElementById('inputAtf').value = "";
+            document.getElementById('inputSq').value = "";
+            document.getElementById('inputRmk').value = "";
+            document.getElementById('pdcOutputBox').innerHTML = `
+                <div class="text-zinc-600 text-center pt-24 font-sans">
+                    <i class="fas fa-network-wired block text-3xl mb-2 text-zinc-800"></i>
+                    Menunggu kompilasi data clearance dari operator ATC...
+                </div>`;
+            document.getElementById('liveCid').innerText = "CID: -----";
+        }
+
+        function compileGermanPDC() {
+            const arc = document.getElementById('inputArc').value.toUpperCase().trim();
+            const dest = document.getElementById('inputDest').value.toUpperCase().trim();
+            const clrType = document.getElementById('inputClearance').value;
+            const sid = document.getElementById('inputSid').value.toUpperCase().trim() || "DCT";
+            const dct = document.getElementById('inputDct').value.toUpperCase().trim() || "DIRECT";
+            const sq = document.getElementById('inputSq').value.trim() || "0000";
+            const atf = document.getElementById('inputAtf').value.toUpperCase().trim() || "121.800 MHZ";
+            const alt = document.getElementById('inputAlt').value.toUpperCase().trim() || "5000FT";
+            const rmk = document.getElementById('inputRmk').value.toUpperCase().trim();
+
+            if(!arc || !dest) {
+                return alert("Mohon lengkapi minimal Callsign (ARC) dan Destinasi (DEST)!");
+            }
+
+            const generatedCid = "PDC" + Math.floor(100 + Math.random() * 900);
+            document.getElementById('liveCid').innerText = `CID: ${generatedCid}`;
+
+            let compileResult = `PDC REQ/STATUS APPROVED\n`;
+            compileResult += `ARC/${arc} DEST/${dest}\n`;
+            compileResult += `CLR TYPE/${clrType}\n`;
+            compileResult += `SIDs/${sid} VIA DCT/${dct}\n`;
+            compileResult += `INIT ALT/${alt}\n`;
+            compileResult += `SQUAWK(SQ)/${sq}\n`;
+            compileResult += `ATF FREQ/${atf}\n`;
+            compileResult += `SYSTEM/PRNAV ONLY/EDXX-FIR\n`;
+            
+            if(rmk) {
+                compileResult += `ADDITIONAL MSG RMK/${rmk}\n`;
+            } else {
+                compileResult += `ADDITIONAL MSG RMK/NIL\n`;
+            }
+            
+            compileResult += `REF CID/${generatedCid}`;
+            document.getElementById('pdcOutputBox').innerText = compileResult;
+        }
+
+        function copyPdcToClipboard() {
+            const outputBox = document.getElementById('pdcOutputBox');
+            if (outputBox.innerText.includes("Menunggu kompilasi")) {
+                return alert("Belum ada data pesan clearance yang dibuat!");
+            }
+            navigator.clipboard.writeText(outputBox.innerText);
+            alert("Pesan PDC Berhasil Disalin! Siap dipasang di chat log PTFS.");
+        }
+
+        window.onload = function() {
+            generateRandomSquawk();
+        }
+    </script>
+</body>
+</html>
